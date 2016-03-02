@@ -62,34 +62,31 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-X = [ones(m,1) X];
+a1 = [ones(m,1) X];
+
+a2 = [ones(m,1) sigmoid(a1 * Theta1')];
+
+a3 = sigmoid(a2 * Theta2');
+
+eye_matrix = eye(num_labels);
+y_matrix = eye_matrix(y,:);
+
+J = sum(sum((-y_matrix) .* log(a3) ...
+	- (ones(size(y_matrix)) - y_matrix) .* log(ones(size(a3)) - a3)));
 
 
-hiddenAMatrix = sigmoid(X * Theta1');
+J = J / m;
 
-hiddenAMatrix = [ones(m,1) hiddenAMatrix];
-hiddenAMatrix(1,:)
+%regularization
+theta1Reg = Theta1(:, 2:size(Theta1,2));
 
-hypothesisMatrix = sigmoid(hiddenAMatrix * Theta2');
+theta2Reg = Theta2(:, 2:size(Theta2,2));
 
+regularizer = lambda / 2 / m * (sum(sum(theta1Reg .^ 2)) + sum(sum(theta2Reg .^ 2)));
 
-[p,q] = max(hypothesisMatrix, [], 2);
-
-
-
-yMatrix = zeros(m, num_labels);
+J = J + regularizer;
 
 
-for i = 1:m
-	yMatrix(i, y(m)) = 1;
-end
-
-hypothesisMatrix(1,:)
-J = sum(sum((-yMatrix) .* log(hypothesisMatrix) ...
-	- (ones(size(yMatrix)) - yMatrix) .* log(ones(size(hypothesisMatrix)) - hypothesisMatrix)))
-
-
-J = J / m
 
 
 
