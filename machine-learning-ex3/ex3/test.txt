@@ -1,0 +1,9 @@
+options = optimset('GradObj', 'on', 'MaxIter', 50);
+initial_theta = zeros(m,1);
+
+
+for n = 1:10
+	all_theta(n,:) = fmincg (@(t)(lrCostFunction(t, X, (y == n), lambda)), initial_theta, options)
+
+
+end
